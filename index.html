@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Camera Test</title>
+<style>
+body {
+  background:#101827;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+  padding:20px;
+}
+h1 {color:#55aaff}
+video,img {
+  width:100%;
+  max-width:350px;
+  border-radius:15px;
+  margin-top:15px;
+}
+button {
+  background:#1685ff;
+  color:white;
+  border:0;
+  padding:14px 22px;
+  margin:10px;
+  border-radius:10px;
+  font-size:16px;
+}
+</style>
+</head>
+<body>
+
+<h1>Camera Test 📸</h1>
+<p>कैमरा खोलने के लिए बटन दबाएँ।</p>
+
+<button onclick="startCamera()">Open Camera</button>
+<br>
+
+<video id="video" autoplay playsinline></video>
+<br>
+
+<button onclick="takePhoto()">Take Photo</button>
+<br>
+
+<canvas id="canvas" hidden></canvas>
+<img id="photo" hidden>
+
+<script>
+let stream;
+
+async function startCamera() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: {facingMode:"user"}
+    });
+    document.getElementById("video").srcObject = stream;
+  } catch(e) {
+    alert("Camera permission nahi mili");
+  }
+}
+
+function takePhoto() {
+  if (!stream) {
+    alert("Pehle camera open karein");
+    return;
+  }
+
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  canvas.getContext("2d").drawImage(video,0,0);
+
+  const photo = document.getElementById("photo");
+  photo.src = canvas.toDataURL("image/png");
+  photo.hidden = false;
+
+  alert("Photo successfully captured!");
+}
+</script>
+
+</body>
+  </html>
+  
